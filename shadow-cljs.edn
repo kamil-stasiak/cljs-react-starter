@@ -1,0 +1,21 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dependencies
+ [[reagent "0.9.0-rc4" :exclusions [cljsjs/react cljsjs/react-dom]]
+  [proto-repl "0.3.1"]
+  [data-frisk-reagent "0.4.5"]]
+
+ :nrepl {:port 9000}
+
+ :builds
+ {:app
+  {:target :browser
+   :modules {:main {:init-fn me.stasiak.starter.core/init}}
+   :devtools {:before-load me.stasiak.starter.core/stop
+              :after-load me.stasiak.starter.core/start
+              :http-root "public"
+              :http-port 8020}}}}

@@ -1,0 +1,13 @@
+{
+  "name": "cljs-app",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "2.8.83"
+  },
+  "dependencies": {
+    "@material-ui/core": "4.8.3",
+    "react": "16.9.0",
+    "react-dom": "16.9.0"
+  }
+}
