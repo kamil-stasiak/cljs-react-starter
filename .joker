@@ -1,0 +1,20 @@
+{:known-macros
+ [clojure.test.check.generators/let
+  compojure.core/defroutes
+  compojure.core/GET
+  compojure.core/POST
+  failjure.core/attempt-all
+  failjure.core/if-let-failed?
+  failjure.core/if-let-ok?
+  failjure.core/if-failed
+  failjure.core/when-failed
+  mount.core/defstate
+  devcard.core/defcard]
+ :known-namespaces
+ [clojure.string clojure.set]
+ :known-tags
+ []
+ :ignored-unused-namespaces
+ []
+ :rules
+ {}}
