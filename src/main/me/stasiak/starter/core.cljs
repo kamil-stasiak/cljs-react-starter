@@ -1,12 +1,18 @@
 (ns me.stasiak.starter.core
   (:require [reagent.core :as r]
-            ; [devcards.core :as dc :include-macros true]
-            [me.stasiak.starter.bmi :refer [bmi-component]]
+            [devcards.core :as dc :include-macros true]
+            [me.stasiak.starter.bmi :refer [bmi-component-2]]
             ["@material-ui/core" :refer [Button]]
             [datafrisk.core :as d]
             [clojure.spec.alpha :as spec]
             [clojure.test.check.generators :as gen]))
-  ; (:require-macros [devcards.core :refer [defcard]]))
+  ; (:require-macros
+   ; [devcards.core :refer [defcard]]))
+
+(enable-console-print!)
+
+(comment
+  (js/console.log "Hello world"))
 
 (defonce store (r/atom
                 {:message1 "Hello world"
@@ -54,6 +60,7 @@
 
 (defn start []
   (js/console.log "Starting...")
+  (devcards.core/start-devcard-ui!)
   (r/render [app]
     (.getElementById js/document "app")))
 
@@ -62,88 +69,88 @@
 
 ; SPECS
 ; Simple string spec
-(spec/def ::id string?)
-(spec/valid? ::id "Hello world")
-(spec/valid? ::id 1)
 
-; int or regex id
-(def id-regex #"^[0-9]*$")
-(spec/def ::id int?)
-(spec/def ::id-regex
-  (spec/and
-   string?
-   #(re-matches id-regex %)))
-(spec/def ::id-types (spec/or :simple-id ::id
-                              :regex-id ::id-regex))
+(comment
+  (spec/def ::id int?)
+  (spec/valid? ::id 12345)
+  (spec/valid? ::id "12345")
 
-(spec/valid? ::id 12345)
-(spec/valid? ::id "12345")
+ ; int or regex id
+  (spec/def ::id-regex
+    (spec/and
+     string?
+     #(re-matches #"^[0-9]*$" %)))
 
-(spec/def ::suit #{:club :diamond :heart :spade})
-(spec/valid? ::suit :club)
-(spec/valid? ::suit :fight-club)
+  (spec/valid? ::id-regex "12345")
+  (spec/valid? ::id-regex "12345abc")
+  (spec/valid? ::id-regex 12345)
 
-(spec/explain ::suit :fight-club)
+  (spec/def ::id-types
+    (spec/or :integer-id ::id
+             :regex-id ::id-regex))
 
-(spec/valid? ::id-regex "12345")
-(spec/valid? ::id-regex "abc")
+  (spec/valid? ::id-types 12345)
+  (spec/valid? ::id-types "12345")
+  (spec/valid? ::id-types "12a")
 
-(spec/valid? ::id-types "12345")
-(spec/valid? ::id-types 1)
+  (spec/def ::suit #{:club :diamond :heart :spade})
+  (spec/valid? ::suit :club)
+  (spec/valid? ::suit :fight-club)
 
-(spec/conform ::id-types 10)
-(spec/conform ::id-types "123123")
-(spec/conform ::id-types "a21")
+ ; developer
+  (spec/def ::name string?)
+  (spec/def ::age int?)
+  (spec/def ::skills list?)
 
-(spec/def ::big-even (spec/and int? even? #(> % 1000)))
-(spec/valid? ::big-even :foo) ;; false
-(spec/valid? ::big-even 10) ;; false
-(spec/valid? ::big-even 2000) ;; true
+  (spec/def ::developer
+    (spec/keys :req-un [::name ::age]
+               :opt-un [::skills]))
 
-(spec/def ::name-or-id (spec/or :name string?
-                                :id   int?))
-(spec/valid? ::name-or-id "abc") ;; true
-(spec/valid? ::name-or-id 100) ;; true
-(spec/valid? ::name-or-id :foo) ;; false
+  (spec/valid? ::developer
+               {:name "Brad" :age 24})
 
-(spec/conform ::name-or-id "abc")
-(spec/conform ::name-or-id 100)
-(spec/explain ::name-or-id 100)
-(spec/conform ::id-regex 100)
+  (spec/valid? ::developer
+               {:name "Brad"})
 
-(spec/def ::name string?)
-(spec/def ::age int?)
-(spec/def ::skills list?)
+ ; explasin print to *out*
+  (spec/explain ::developer
+                {:name "Brad"})
 
-(spec/def ::developer (spec/keys :req-un [::name ::age]
-                                 :opt-un [::skills]))
+  (spec/explain-data ::developer
+                     {:name "Brad"})
 
-(spec/valid? ::developer
-             {:name "Brad" :age 24})
+ ; generators
+  (gen/generate (spec/gen int?))
+  (gen/generate
+   (spec/gen ::developer))
 
-(spec/valid? ::developer
-             {:name "Brad"})
-; explain print to *out*
-(spec/explain ::developer
-              {:name "Brad"})
+ ; new developer
+  (spec/def ::age
+    (spec/and int?
+              #(> % 0)
+              #(< % 120)))
 
-(spec/explain-data ::developer
-                   {:name "Brad"})
+  (spec/def ::skills list?)
+  (spec/def ::developer
+    (spec/keys :req-un [::name ::age]
+               :opt-un [::skills]))
+  (gen/generate (spec/gen ::developer))
+  (spec/explain-data ::developer
+                     {:name "Brad" :age 130})
+  (spec/explain ::developer
+                {:name "Brad" :age 130}))
+;
+;
+; devcards
 
-; generators
-(gen/generate (spec/gen int?))
-(gen/generate (spec/gen ::developer))
 
-; new developer
-(spec/def ::age (spec/and int? #(> % 0) #(< % 120)))
-(spec/def ::age int?)
-(spec/def ::skills list?)
-(spec/def ::developer (spec/keys :req-un [::name ::age]
-                                 :opt-un [::skills]))
-(gen/generate (spec/gen ::developer))
+(defn my-hello [name]
+  [:div [:h1 (str "Hello " name)]])
 
-; (devcards.core/start-devcard-ui!)
+(dc/defcard "siemanko")
+(dc/defcard my-hello-devcard (my-hello "kamil"))
 
+(devcards.core/start-devcard-ui!)
 ; (defn Example [] [:div "Hello"])
 
 ; (defcard hello-example (dc/react-card (Example)))
@@ -153,3 +160,24 @@
 ;          (fn [data-atom _] (bmi-component data-atom)) ;; object of focus
 ;          {:height 180 :weight 80}                     ;; optional initial data
 ;          {:inspect-data true :history true})
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;

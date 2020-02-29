@@ -1,5 +1,6 @@
 (ns me.stasiak.starter.bmi
   (:require [reagent.core :as r]))
+
 (def bmi-data (r/atom {:height 180 :weight 80}))
 
 (defn calc-bmi []
@@ -17,7 +18,7 @@
                         (when (not= param :bmi)
                           (swap! bmi-data assoc :bmi nil)))}])
 
-(defn bmi-component []
+(defn bmi-component-2 []
   (let [{:keys [weight height bmi]} (calc-bmi)
         [color diagnose] (cond
                            (< bmi 18.5) ["orange" "underweight"]

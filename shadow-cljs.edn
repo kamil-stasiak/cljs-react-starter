@@ -9,9 +9,8 @@
   [proto-repl "0.3.1"]
   [data-frisk-reagent "0.4.5"]
   [org.clojure/test.check "1.0.0"]
-  [devcards "0.2.5"]
-  [com.rpl/specter "1.1.3"]]
-  ; [devcards "0.2.5"]]
+  [com.rpl/specter "1.1.3"]
+  [devcards "0.2.5"]]
 
  :nrepl {:port 9000}
 
@@ -22,4 +21,10 @@
    :devtools {:before-load me.stasiak.starter.core/stop
               :after-load me.stasiak.starter.core/start
               :http-root "public"
-              :http-port 8020}}}}
+              :http-port 8020}}
+  :devcards
+  {:asset-path "/js"
+   :modules {:main {:init-fn me.stasiak.starter.devcards/main}}
+   :compiler-options {:devcards true}
+   :output-dir "public/js"
+   :target :browser}}}
