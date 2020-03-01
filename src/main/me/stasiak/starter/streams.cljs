@@ -1,6 +1,6 @@
 (ns me.stasiak.starter.streams
   (:require [com.rpl.specter :refer
-             [transform select filterer srange
+             [transform select filterer srange setval
               LAST ALL]]))
 
 (map inc [1 2 3])
@@ -42,10 +42,24 @@
 (pop [1 2 3]) ; => [1 2]
 (conj #{1 2 3} 4) ; => #{1 2 3 4}
 
-(transform [ALL :a even?] inc [{:a 1} {:a 2 :b 1} {:a 4}])
+; Increment the last odd number in a sequence
+(transform [ALL :a even?]
+           inc
+           [{:a 1} {:a 2 :b 1} {:a 4}])
+
 (transform [(filterer odd?) LAST]
            inc
            [2 1 3 6 7 4 8])
+
 (transform [(srange 4 11) (filterer even?)]
            reverse
            [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15])
+
+(setval [:a (srange 2 4)] [] {:a [1 2 3 4 5]})
+;; => {:a [1 2 5]}
+
+(setval (srange 2 2) [:A :A] '(1 2 3 4 5))
+;; => (1 2 :A :A 3 4 5)
+
+(transform [:a (srange 1 5)] reverse {:a [1 2 3 4 5 6]})
+           ;; => {:a [1 5 4 3 2 6]}
