@@ -1,29 +1,20 @@
-(ns todomvc.core
+(ns me.stasiak.starter.todo
   (:require [reagent.core :as r]
             [reagent.dom :as rdom]))
 
-(defonce todos (r/atom (sorted-map)))
-
 (defonce counter (r/atom 0))
 
-(defn add-todo [text]
+(defn add-todo [text todos]
   (let [id (swap! counter inc)]
     (swap! todos assoc id {:id id :title text :done false})))
 
-(defn toggle [id] (swap! todos update-in [id :done] not))
-(defn save [id title] (swap! todos assoc-in [id :title] title))
-(defn delete [id] (swap! todos dissoc id))
+(defn toggle [todos id] (swap! todos update-in [id :done] not))
+(defn save [todos id title] (swap! todos assoc-in [id :title] title))
+(defn delete [todos id] (swap! todos dissoc id))
 
 (defn mmap [m f a] (->> m (f a) (into (empty m))))
-(defn complete-all [v] (swap! todos mmap map #(assoc-in % [1 :done] v)))
-(defn clear-done [] (swap! todos mmap remove #(get-in % [1 :done])))
-
-(defonce init (do
-                (add-todo "Rename Cloact to Reagent")
-                (add-todo "Add undo demo")
-                (add-todo "Make all rendering async")
-                (add-todo "Allow any arguments to component functions")
-                (complete-all true)))
+(defn complete-all [v todos] (swap! todos mmap map #(assoc-in % [1 :done] v)))
+(defn clear-done [todos] (swap! todos mmap remove #(get-in % [1 :done])))
 
 (defn todo-input [{:keys [title on-save on-stop]}]
   (let [val (r/atom title)
@@ -45,7 +36,7 @@
 (def todo-edit (with-meta todo-input
                           {:component-did-mount #(.focus (rdom/dom-node %))}))
 
-(defn todo-stats [{:keys [filt active done]}]
+(defn todo-stats [{:keys [filt active done]} todos]
   (let [props-for (fn [name]
                     {:class (if (= name @filt) "selected")
                      :on-click #(reset! filt name)})]
@@ -57,28 +48,29 @@
       [:li [:a (props-for :active) "Active"]]
       [:li [:a (props-for :done) "Completed"]]]
      (when (pos? done)
-       [:button#clear-completed {:on-click clear-done}
+       [:button#clear-completed {:on-click #(clear-done todos)}
         "Clear completed " done])]))
 
 (defn todo-item []
   (let [editing (r/atom false)]
-    (fn [{:keys [id done title]}]
+    (fn [{:keys [id done title]} todos]
       [:li {:class (str (if done "completed ")
                         (if @editing "editing"))}
        [:div.view
         [:input.toggle {:type "checkbox" :checked done
-                        :on-change #(toggle id)}]
-        [:label {:on-double-click #(reset! editing true)} title]
-        [:button.destroy {:on-click #(delete id)}]]
+                        :on-change #(toggle todos id)}]
+        [:label {:on-double-click #(reset! editing true)}
+         (str title "")]
+        [:button.destroy {:on-click #(delete todos id)}]]
        (when @editing
          [todo-edit {:class "edit" :title title
-                     :on-save #(save id %)
+                     :on-save #(save todos id %)
                      :on-stop #(reset! editing false)}])])))
 
 (defn todo-app [props]
   (let [filt (r/atom :all)]
     (fn []
-      (let [items (vals @todos)
+      (let [items (vals @props)
             done (->> items (filter :done) count)
             active (- (count items) done)]
         [:div
@@ -87,20 +79,20 @@
            [:h1 "todos"]
            [todo-input {:id "new-todo"
                         :placeholder "What needs to be done?"
-                        :on-save add-todo}]]
+                        :on-save #(add-todo % props)}]]
           (when (-> items count pos?)
             [:div
              [:section#main
               [:input#toggle-all {:type "checkbox" :checked (zero? active)
-                                  :on-change #(complete-all (pos? active))}]
+                                  :on-change #(complete-all (pos? active) props)}]
               [:label {:for "toggle-all"} "Mark all as complete"]
               [:ul#todo-list
                (for [todo (filter (case @filt
                                     :active (complement :done)
                                     :done :done
                                     :all identity) items)]
-                 ^{:key (:id todo)} [todo-item todo])]]
+                 ^{:key (:id todo)} [todo-item todo props])]]
              [:footer#footer
-              [todo-stats {:active active :done done :filt filt}]]])]
+              [todo-stats {:active active :done done :filt filt} props]]])]
          [:footer#info
           [:p "Double-click to edit a todo"]]]))))

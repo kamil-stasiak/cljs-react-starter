@@ -9,7 +9,8 @@
   failjure.core/if-failed
   failjure.core/when-failed
   mount.core/defstate
-  devcard.core/defcard]
+  devcards.core/defcard
+  devcards.core/reagent]
  :known-namespaces
  [clojure.string clojure.set]
  :known-tags

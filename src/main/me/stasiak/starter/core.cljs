@@ -1,13 +1,9 @@
 (ns me.stasiak.starter.core
   (:require [reagent.core :as r]
-            [devcards.core :as dc :include-macros true]
-            [me.stasiak.starter.bmi :refer [bmi-component-2]]
             ["@material-ui/core" :refer [Button]]
             [datafrisk.core :as d]
             [clojure.spec.alpha :as spec]
             [clojure.test.check.generators :as gen]))
-  ; (:require-macros
-   ; [devcards.core :refer [defcard]]))
 
 (enable-console-print!)
 
@@ -60,12 +56,10 @@
 
 (defn start []
   (js/console.log "Starting...")
-  (devcards.core/start-devcard-ui!)
   (r/render [app]
     (.getElementById js/document "app")))
 
-(defn ^:export init []
-  (start))
+(defn ^:export init [] (start))
 
 ; SPECS
 ; Simple string spec
@@ -139,27 +133,6 @@
                      {:name "Brad" :age 130})
   (spec/explain ::developer
                 {:name "Brad" :age 130}))
-;
-;
-; devcards
-
-
-(defn my-hello [name]
-  [:div [:h1 (str "Hello " name)]])
-
-(dc/defcard "siemanko")
-(dc/defcard my-hello-devcard (my-hello "kamil"))
-
-(devcards.core/start-devcard-ui!)
-; (defn Example [] [:div "Hello"])
-
-; (defcard hello-example (dc/react-card (Example)))
-
-; (defcard bmi-calculator                        ;; optional symbol name
-;          "*Code taken from Reagent readme.*"          ;; optional markdown doc
-;          (fn [data-atom _] (bmi-component data-atom)) ;; object of focus
-;          {:height 180 :weight 80}                     ;; optional initial data
-;          {:inspect-data true :history true})
 ;
 ;
 ;

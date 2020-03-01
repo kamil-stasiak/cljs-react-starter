@@ -24,7 +24,7 @@
               :http-port 8020}}
   :devcards
   {:asset-path "/js"
-   :modules {:main {:init-fn me.stasiak.starter.devcards/main}}
+   :modules {:main {:init-fn me.stasiak.starter.devcards.devcards/main}}
    :compiler-options {:devcards true}
    :output-dir "public/js"
    :target :browser}}}
