@@ -42,7 +42,7 @@
 (pop [1 2 3]) ; => [1 2]
 (conj #{1 2 3} 4) ; => #{1 2 3 4}
 
-; Increment the last odd number in a sequence
+; specter
 (transform [ALL :a even?]
            inc
            [{:a 1} {:a 2 :b 1} {:a 4}])
