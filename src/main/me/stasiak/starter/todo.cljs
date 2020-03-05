@@ -60,7 +60,10 @@
         [:input.toggle {:type "checkbox" :checked done
                         :on-change #(toggle todos id)}]
         [:label {:on-double-click #(reset! editing true)}
-         (str title "")]
+         ;
+         ; add something to title here!
+         ;
+         (str title "+promo")]
         [:button.destroy {:on-click #(delete todos id)}]]
        (when @editing
          [todo-edit {:class "edit" :title title

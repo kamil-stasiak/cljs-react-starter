@@ -9,12 +9,29 @@
   (* (:amount money) 1.07))
 (defmethod calculate-vat :vat-free [money]
   (* (:amount money) 1.00))
+(defmethod calculate-vat :default [money]
+  (* (:amount money) 1.00))
 
-(+ 1 2)
+(calculate-vat {:amount 100 :type :basic})
+(calculate-vat {:amount 100})
+(calculate-vat {:amount 100 :type :lower})
+(calculate-vat {:amount 100 :type :vat-free})
 ;
 ;
 ;
 ;
+;
+;
+;
+;
+;
+;
+;
+
+;
+;
+;
+(calculate-vat {:amount 100 :type :basic-2011})
 ;
 ;
 ;
