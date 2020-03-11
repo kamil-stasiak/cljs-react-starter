@@ -6,7 +6,27 @@
 (map inc [1 2 3])
 (mapv inc [1 2 3])
 
+;
+;
+;
+;
+;
+
 (first (.split (.replace (.toUpperCase "a b c d") "A" "X") " "))
+
+;
+;
+;
+;
+;
+;
+;
+
+;
+;
+;
+;
+;
 
 (-> "a b c d"
     .toUpperCase
@@ -55,10 +75,14 @@
            reverse
            [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15])
 
-(setval [:a (srange 2 4)] [] {:a [1 2 3 4 5]})
+(setval [:a (srange 2 4)]
+        []
+        {:a [1 2 3 4 5]})
 ;; => {:a [1 2 5]}
 
-(setval (srange 2 2) [:A :A] '(1 2 3 4 5))
+(setval (srange 2 2)
+        [:A :A]
+        '(1 2 3 4 5))
 ;; => (1 2 :A :A 3 4 5)
 
 (transform [:a (srange 1 5)] reverse {:a [1 2 3 4 5 6]})
