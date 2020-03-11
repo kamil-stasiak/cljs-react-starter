@@ -4,7 +4,8 @@
                      alts! timeout]]))
 
 (defn printer [in name]
-  (go (while true (println (str (<! in) "-from-printer-" name)))))
+  (go (while true
+        (println (str (<! in) "-from-printer-" name)))))
 
 (def printer-chan (chan))
 (printer printer-chan "1")

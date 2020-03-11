@@ -30,7 +30,8 @@
    [d/DataFriskShell @store]
    [:div [:> Button {:variant "contained"
                      :color "primary"
-                     :on-click #(swap! store assoc :show-message true)} "Hello kolegi ze studiów"]]
+                     :on-click #(swap! store assoc :show-message true)}
+          (:message1 @store)]]
 
    (if (all-checked? @store) [:span "OK"])
    [:ul
@@ -45,11 +46,21 @@
 (comment
   (->> (:checkboxes @store)
        (map :value)
-       (reduce #(%1 %2))))
+       (reduce #(and %1 %2))))
 
 (comment
   (swap! store assoc-in [:checkboxes 2 :value] (not (get-in @store [:checkboxes 2 :value]))))
 
+; Change message1 value
+(comment
+  (swap! store assoc :message1 "Hi company!"))
+
+;
+;
+;
+;
+;
+;
 (defn stop []
   (js/console.log "Stopping..."))
 

@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as spec]
             [clojure.test.check.generators :as gen]))
 ; SPECS
+; basics
 ; Simple string spec
 (spec/def ::id int?)
 (spec/valid? ::id 12345)
@@ -29,7 +30,14 @@
 (spec/def ::suit #{:club :diamond :heart :spade})
 (spec/valid? ::suit :club)
 (spec/valid? ::suit :fight-club)
-
+;
+;
+;
+;
+;
+;
+;
+;
 ; developer
 (spec/def ::name string?)
 (spec/def ::age int?)
@@ -88,3 +96,20 @@
                    {:name "Brad" :age 130})
 (spec/explain ::developer
               {:name "Brad" :age 130})
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+
+;
